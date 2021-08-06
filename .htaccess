@@ -1,0 +1,60 @@
+<IfModule mod_rewrite.c>
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteEngine On
+#RewriteBase /myproject
+RewriteRule ^(.*)$ index.php?/$1 [L]
+</IfModule>
+
+
+# Enable gzip compression
+<ifModule mod_gzip.c>
+mod_gzip_on Yes
+mod_gzip_dechunk Yes
+mod_gzip_item_include file \.(html?|txt|css|js|php|pl)$
+mod_gzip_item_include handler ^cgi-script$
+mod_gzip_item_include mime ^text/.*
+mod_gzip_item_include mime ^application/x-javascript.*
+mod_gzip_item_exclude mime ^image/.*
+mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+</ifModule>
+
+
+#Reformat ETAG
+FileETag MTime Size
+
+#Cache-control Header - HTTP 1.1
+<IfModule mod_headers.c>
+	#Cache 1 Minggu
+	<FilesMatch "\.(html|htm)$">
+		Header set Cache-control "max-age:604800"
+	</FilesMatch>
+
+	#Cache 3 Bulan
+	<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|swf)$">
+		Header set Cache-Control "max-age=5184000"
+	</FilesMatch>
+
+	#Cache 1 Bulan
+	<FilesMatch "\.(js|css)$">
+		Header set Cache-Control "max-age=2592000"
+	</FilesMatch>
+</IfModule>
+
+#Expires Header - HTTP 1.0
+<IfModule mod_expires.c>
+	ExpiresActive on
+	ExpiresDefault "access"
+	ExpiresByType image/gif "access plus 3 month"
+	ExpiresByType image/png "access plus 3 month"
+	ExpiresByType image/jpg "access plus 3 month"
+	ExpiresByType image/jpeg "access plus 3 month"
+	ExpiresByType video/mp4 "access plus 3 month"
+	ExpiresByType video/webm "access plus 3 month"
+
+	ExpiresByType text/html "modification plus 1 weeks"
+
+	ExpiresByType text/css "access plus 1 month"
+	ExpiresByType text/javascript "access plus 1 month"
+	ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
